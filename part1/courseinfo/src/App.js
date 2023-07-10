@@ -1,5 +1,17 @@
 const Header = ({course}) => (<h1>{course}</h1>);
-const Content = ({parts}) => (<div>{parts.map((item, idx) => (<p key={idx}>{item.name} {item.exercises}</p>))}</div>);
+
+const Part = ({part}) => (<p>{part.name} {part.exercises}</p>);
+
+const Content = ({parts}) => {
+  return (
+    <div>
+      <Part part={parts[0]}/>
+      <Part part={parts[1]}/>
+      <Part part={parts[2]}/>
+    </div>
+  )
+}
+
 const Total = ({parts}) => (<p>Number of exercises {parts.reduce((sum, part) => sum + part.exercises, 0)}</p>);
 
 const App = () => {
