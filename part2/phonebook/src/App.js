@@ -4,19 +4,22 @@ import Person from './components/Person'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 
+const Notification = ({message, type}) => (message === null) ? null : <div className={type}>{message}</div>;
+
 const App = () => {
 
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [newFilter, setNewFilter] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService
     .getAll()
     .then(initialPersons => setPersons(initialPersons))
   }, []);
-  //console.log('render', persons.length, 'persons')
 
   const addName = (event) => {
     event.preventDefault();
@@ -32,8 +35,6 @@ const App = () => {
         setNewName('');
         setNewNumber('');
       }
-      //setNewName('');
-      //setNewNumber('');
       return;
     }
 
@@ -48,6 +49,10 @@ const App = () => {
       setPersons(persons.concat(returnedPerson));
       setNewName('');
       setNewNumber('');
+      setSuccessMessage(
+        `Added '${returnedPerson.name}'`
+      );
+      setTimeout(() => setSuccessMessage(null), 5000);
     })
   }
 
@@ -59,6 +64,14 @@ const App = () => {
       .then(() => {
         setPersons(persons.filter(person => person.id !== id));
       })
+      .catch( error => {
+        setErrorMessage(
+          `Information of ${person} has already been removed from server`
+        );
+        setTimeout(() => setErrorMessage(null), 5000);
+        setPersons(persons.filter(person => person.id !== id));
+      })
+      
     }
   }
 
@@ -71,7 +84,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} type='success'/>
+      <Notification message={errorMessage} type='error'/>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
+      <h2>add a new</h2>
       <PersonForm 
         addName={addName} 
         newName={newName} 
