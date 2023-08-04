@@ -32,6 +32,10 @@ const App = () => {
         personService
         .update(person.id, changedPerson)
         .then(returnedPerson => setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson)))
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => setErrorMessage(null), 5000)
+        })
         setNewName('');
         setNewNumber('');
       }
@@ -53,6 +57,10 @@ const App = () => {
         `Added '${returnedPerson.name}'`
       );
       setTimeout(() => setSuccessMessage(null), 5000);
+    })
+    .catch(error => {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => setErrorMessage(null), 5000)
     })
   }
 
